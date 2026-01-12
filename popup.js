@@ -266,7 +266,11 @@ function openSettings() {
   const input = document.getElementById('uriInput');
   const error = document.getElementById('modalError');
 
+  modal.style.display = 'block';
+  // Force reflow
+  modal.offsetHeight;
   modal.classList.add('active');
+
   input.value = '';
   error.style.display = 'none';
 }
@@ -275,6 +279,11 @@ function openSettings() {
 function closeSettings() {
   const modal = document.getElementById('settingsModal');
   modal.classList.remove('active');
+
+  // Wait for transition to finish before hiding
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300); // match transition duration
 }
 
 // Add accounts from URI
@@ -315,12 +324,129 @@ async function addAccounts() {
   }
 }
 
-// Clear all accounts
-async function clearAccounts() {
-  if (confirm('Bạn có chắc muốn xóa tất cả tài khoản?')) {
-    accounts = [];
+// Add manual account
+async function addManualAccount() {
+  const name = document.getElementById('manualName').value.trim();
+  const issuer = document.getElementById('manualIssuer').value.trim();
+  let secret = document.getElementById('manualSecret').value.trim().toUpperCase().replace(/\s/g, '');
+  const errorDiv = document.getElementById('modalError');
+
+  errorDiv.style.display = 'none';
+
+  try {
+    if (!name) throw new Error('Vui lòng nhập tên tài khoản');
+    if (!secret) throw new Error('Vui lòng nhập Secret Key');
+
+    // Validate Base32
+    const base32Regex = /^[A-Z2-7]+=*$/;
+    if (!base32Regex.test(secret)) {
+      throw new Error('Secret Key không hợp lệ (Chỉ chấp nhận chữ A-Z và số 2-7)');
+    }
+
+    const newAccount = {
+      secretBase32: secret,
+      name: name,
+      issuer: issuer || '',
+      type: 'TOTP',
+      digits: 6,
+      period: 30
+    };
+
+    // Add and save
+    accounts.push(newAccount);
     await saveAccounts();
     renderAccounts();
+    updateAllOTP();
+
+    // Clear inputs upon success
+    document.getElementById('manualName').value = '';
+    document.getElementById('manualIssuer').value = '';
+    document.getElementById('manualSecret').value = '';
+
+    closeSettings();
+
+  } catch (err) {
+    errorDiv.textContent = err.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+// Toggle Select All
+function toggleSelectAll() {
+  const selectAll = document.getElementById('selectAllCheckbox');
+  const checkboxes = document.querySelectorAll('.delete-checkbox');
+  checkboxes.forEach(cb => cb.checked = selectAll.checked);
+}
+
+// Render Delete List (with checkboxes)
+function renderDeleteList() {
+  const container = document.getElementById('deleteList');
+  const deleteBtn = document.getElementById('deleteSelectedBtn');
+  const selectAll = document.getElementById('selectAllCheckbox');
+
+  if (!container) return;
+
+  // Reset select all checkbox
+  if (selectAll) selectAll.checked = false;
+
+  if (accounts.length === 0) {
+    container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px;">Không có tài khoản nào</div>';
+    deleteBtn.style.display = 'none';
+    if (selectAll) selectAll.disabled = true;
+    return;
+  }
+
+  if (selectAll) selectAll.disabled = false;
+
+  container.innerHTML = accounts.map((acc, idx) => `
+    <label class="delete-list-item">
+      <input type="checkbox" class="delete-checkbox" value="${idx}">
+      <span>${escapeHtml(acc.issuer ? acc.issuer + ' (' + acc.name + ')' : acc.name)}</span>
+    </label>
+  `).join('');
+
+  deleteBtn.style.display = 'block';
+
+  // Add listener to individual checkboxes to update Select All state
+  const checkboxes = document.querySelectorAll('.delete-checkbox');
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const allChecked = Array.from(checkboxes).every(c => c.checked);
+      if (selectAll) selectAll.checked = allChecked;
+    });
+  });
+}
+
+// Delete selected accounts
+async function deleteSelectedAccounts() {
+  const checked = document.querySelectorAll('.delete-checkbox:checked');
+  if (checked.length === 0) {
+    alert('Vui lòng chọn ít nhất 1 tài khoản để xóa');
+    return;
+  }
+
+  if (!confirm(`Bạn có chắc muốn xóa ${checked.length} tài khoản đã chọn?`)) {
+    return;
+  }
+
+  // Get indices to delete
+  const indicesToDelete = new Set(Array.from(checked).map(cb => parseInt(cb.value)));
+
+  // Filter out deleted accounts
+  accounts = accounts.filter((_, index) => !indicesToDelete.has(index));
+
+  await saveAccounts();
+
+  // Update UI main list
+  renderAccounts();
+  updateAllOTP(); // Generate codes for remaining accounts
+
+  // Update delete list in modal
+  renderDeleteList();
+
+  // If no accounts left, update empty state visuals manually if needed or just let renderAccounts handle it
+  if (accounts.length === 0) {
+    document.getElementById('deleteSelectedBtn').style.display = 'none';
   }
 }
 
@@ -329,14 +455,44 @@ document.addEventListener('DOMContentLoaded', function () {
   // Event listeners
   const settingsBtn = document.getElementById('settingsBtn');
   const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-  const clearBtn = document.getElementById('clearBtn');
   const submitBtn = document.getElementById('submitBtn');
+  const submitManualBtn = document.getElementById('submitManualBtn');
+  const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+  const selectAllCheckbox = document.getElementById('selectAllCheckbox');
   const modal = document.getElementById('settingsModal');
+  const tabs = document.querySelectorAll('.tab');
 
   if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
   if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
-  if (clearBtn) clearBtn.addEventListener('click', clearAccounts);
+  if (deleteSelectedBtn) deleteSelectedBtn.addEventListener('click', deleteSelectedAccounts);
+  if (selectAllCheckbox) selectAllCheckbox.addEventListener('change', toggleSelectAll);
   if (submitBtn) submitBtn.addEventListener('click', addAccounts);
+  if (submitManualBtn) submitManualBtn.addEventListener('click', addManualAccount);
+
+  // Tab Switching Logic
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active from all tabs and contents
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      // Add active to clicked tab
+      tab.classList.add('active');
+
+      // Show corresponding content
+      const targetId = `tab-${tab.dataset.tab}`;
+      document.getElementById(targetId).classList.add('active');
+
+      // If clicking Options tab, render the delete list
+      if (tab.dataset.tab === 'options') {
+        renderDeleteList();
+      }
+
+      // Clear errors
+      const errorDiv = document.getElementById('modalError');
+      if (errorDiv) errorDiv.style.display = 'none';
+    });
+  });
 
   // Color picker event listeners
 
