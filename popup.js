@@ -253,7 +253,7 @@ async function copyCode(index) {
         }, 1000);
       }
     } catch (err) {
-      console.error('Không thể copy:', err);
+      console.error('Cannot copy:', err);
     }
   }
 }
@@ -295,12 +295,12 @@ async function addAccounts() {
 
   try {
     if (!uri.startsWith('otpauth-migration://offline?data=')) {
-      throw new Error('URI không hợp lệ. URI phải bắt đầu với "otpauth-migration://offline?data="');
+      throw new Error('Invalid URI. URI must start with "otpauth-migration://offline?data="');
     }
 
     const dataParam = uri.split('data=')[1];
     if (!dataParam) {
-      throw new Error('Không tìm thấy dữ liệu trong URI');
+      throw new Error('No data found in URI');
     }
 
     const base64Data = decodeURIComponent(dataParam);
@@ -308,7 +308,7 @@ async function addAccounts() {
     const newAccounts = parseProtobuf(bytes);
 
     if (newAccounts.length === 0) {
-      throw new Error('Không tìm thấy tài khoản nào trong dữ liệu');
+      throw new Error('No accounts found in data');
     }
 
     // Add new accounts
@@ -334,13 +334,13 @@ async function addManualAccount() {
   errorDiv.style.display = 'none';
 
   try {
-    if (!name) throw new Error('Vui lòng nhập tên tài khoản');
-    if (!secret) throw new Error('Vui lòng nhập Secret Key');
+    if (!name) throw new Error('Please enter account name');
+    if (!secret) throw new Error('Please enter Secret Key');
 
     // Validate Base32
     const base32Regex = /^[A-Z2-7]+=*$/;
     if (!base32Regex.test(secret)) {
-      throw new Error('Secret Key không hợp lệ (Chỉ chấp nhận chữ A-Z và số 2-7)');
+      throw new Error('Invalid Secret Key (Only A-Z and 2-7 allowed)');
     }
 
     const newAccount = {
@@ -390,7 +390,7 @@ function renderDeleteList() {
   if (selectAll) selectAll.checked = false;
 
   if (accounts.length === 0) {
-    container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px;">Không có tài khoản nào</div>';
+    container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px;">No accounts available</div>';
     deleteBtn.style.display = 'none';
     if (selectAll) selectAll.disabled = true;
     return;
@@ -421,11 +421,11 @@ function renderDeleteList() {
 async function deleteSelectedAccounts() {
   const checked = document.querySelectorAll('.delete-checkbox:checked');
   if (checked.length === 0) {
-    alert('Vui lòng chọn ít nhất 1 tài khoản để xóa');
+    alert('Please select at least 1 account to delete');
     return;
   }
 
-  if (!confirm(`Bạn có chắc muốn xóa ${checked.length} tài khoản đã chọn?`)) {
+  if (!confirm(`Are you sure you want to delete ${checked.length} selected accounts?`)) {
     return;
   }
 

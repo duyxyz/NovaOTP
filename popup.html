@@ -25,8 +25,8 @@
             d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
           </path>
         </svg>
-        <h2>Chưa có tài khoản</h2>
-        <p>Nhấn nút Settings để thêm tài khoản</p>
+        <h2>No Accounts</h2>
+        <p>Click Settings to add accounts</p>
       </div>
 
       <div id="accountsList"></div>
@@ -44,31 +44,31 @@
         <!-- <h3>Quản lý tài khoản</h3> Removed header -->
 
         <div class="tabs">
-          <button class="tab active" data-tab="manual">Thêm Thủ Công</button>
+          <button class="tab active" data-tab="manual">Manual Entry</button>
           <button class="tab" data-tab="google">Google Import</button>
-          <button class="tab" data-tab="options">Tùy Chọn</button>
+          <button class="tab" data-tab="options">Options</button>
         </div>
 
         <div id="modalError" class="error"></div>
 
         <!-- Tab 1: Manual Entry (Default) -->
         <div id="tab-manual" class="tab-content active">
-          <input type="text" id="manualName" placeholder="Tên tài khoản (Email/User)">
-          <input type="text" id="manualIssuer" placeholder="Nhà cung cấp (VD: Facebook, Google)">
+          <input type="text" id="manualName" placeholder="Account Name (Email/User)">
+          <input type="text" id="manualIssuer" placeholder="Issuer (e.g. Google, Facebook)">
           <input type="text" id="manualSecret" placeholder="Secret Key (Base32)" style="font-family: monospace;">
-          <button class="btn" id="submitManualBtn">Thêm Mã Mới</button>
+          <button class="btn" id="submitManualBtn">Add Account</button>
         </div>
 
         <!-- Tab 2: Google Import -->
         <div id="tab-google" class="tab-content">
           <textarea id="uriInput"
             placeholder="Paste URI migration...&#10;otpauth-migration://offline?data=..."></textarea>
-          <button class="btn" id="submitBtn">Nhập Từ URI</button>
+          <button class="btn" id="submitBtn">Import from URI</button>
           <div class="info">
-            <strong>Hướng dẫn:</strong><br>
-            1. Mở Authenticator → Settings<br>
+            <strong>Instructions:</strong><br>
+            1. Open Authenticator → Settings<br>
             2. Transfer accounts → Export<br>
-            3. Copy URI và paste vào đây
+            3. Copy URI and paste here
           </div>
         </div>
 
@@ -79,10 +79,10 @@
             <label
               style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #334155; cursor: pointer;">
               <input type="checkbox" id="selectAllCheckbox" style="margin: 0; width: 16px; height: 16px;">
-              Chọn tất cả
+              Select All
             </label>
             <button class="btn btn-danger" id="deleteSelectedBtn"
-              style="width: auto; padding: 6px 12px; font-size: 13px; margin: 0;">Xóa Đã Chọn</button>
+              style="width: auto; padding: 6px 12px; font-size: 13px; margin: 0;">Delete Selected</button>
           </div>
 
           <div id="deleteList" class="delete-list" style="max-height: 300px; border: none; padding: 0;">

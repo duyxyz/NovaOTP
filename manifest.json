@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Google Authenticator OTP Viewer",
+  "name": "Authenticator Viewer",
   "version": "1.0",
-  "description": "Xem mã OTP từ Google Authenticator migration URI",
+  "description": "View OTP codes from Google Authenticator migration URI",
   "permissions": [
     "storage"
   ],
