@@ -6,48 +6,60 @@
 
 body {
   width: 380px;
+  height: 520px;
+  /* Fixed height */
   font-family: system-ui, -apple-system, sans-serif;
-  background: #2a2a2a;
-  color: #e0e0e0;
+  background: #f8fafc;
+  /* Light slate background */
+  color: #334155;
+  /* Dark slate text */
+  overflow: hidden;
 }
 
 .container {
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .settings-btn-float {
   position: fixed;
-  bottom: 8px;
-  right: 8px;
-  background: #667eea;
+  bottom: 16px;
+  right: 16px;
+  background: #3b82f6;
   border: none;
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 100;
+  transition: all 0.2s;
 }
 
 .settings-btn-float:hover {
-  background: #5568d3;
+  background: #2563eb;
+  transform: scale(1.05);
 }
 
 .settings-btn-float svg {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 .content {
+  flex: 1;
   padding: 8px;
-  max-height: 500px;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 50px;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
 }
 
 .content::-webkit-scrollbar {
@@ -55,15 +67,20 @@ body {
 }
 
 .empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 40px 20px;
-  color: #666;
+  padding: 20px;
+  color: #64748b;
 }
 
 .empty-state h2 {
   font-size: 16px;
   margin-top: 16px;
-  color: #999;
+  color: #334155;
 }
 
 .empty-state p {
@@ -72,24 +89,59 @@ body {
 }
 
 /* Account item - no card, just list */
+/* Account item - Card Style */
+/* Account item - Card Style */
+/* Account item - Compact List Style */
+/* Account item - Sleek Modern Row */
+/* Account item - Sleek Modern Row (Light - No Glow) */
 .account-item {
-  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
   display: flex;
+  flex-direction: row;
+  /* Horizontal layout */
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: none;
+  /* Removed shadow */
 }
 
 .account-item:hover {
-  background: #333;
+  transform: translateY(-1px);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* Very crisp, subtle shadow only */
+  background: #f8fafc;
+}
+
+/* Accent bar on left */
+.account-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #3b82f6;
+  opacity: 0.7;
+}
+
+.account-item:hover::before {
+  opacity: 1;
+  box-shadow: none;
+  /* Removed glow */
 }
 
 .separator {
-  height: 1px;
-  background: #3a3a3a;
-  margin: 0;
+  display: none;
 }
 
 .account-info {
@@ -97,49 +149,77 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 3px;
+  padding-left: 8px;
+  /* Space for accent bar */
 }
 
 .account-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  color: #e0e0e0;
+  color: #1e293b;
+  /* Dark text */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  letter-spacing: 0.01em;
 }
 
 .account-issuer {
-  font-size: 10px;
-  color: #999;
+  font-size: 11px;
+  color: #64748b;
+  /* Medium gray */
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
 .otp-display {
   flex-shrink: 0;
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
 }
 
 .otp-code {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 700;
   font-family: 'Courier New', monospace;
-  color: #667eea;
-  letter-spacing: 4px;
+  color: #2563eb;
+  /* Strong Blue */
+  letter-spacing: 3px;
   white-space: nowrap;
+  text-shadow: none;
+}
+
+.account-item:hover .otp-code {
+  color: #1d4ed8;
+  text-shadow: none;
 }
 
 /* Copy feedback */
 .account-item.copied {
-  background: #1a3a1a;
+  background: #ecfdf5;
+  border-color: #34d399;
 }
 
 .account-item.copied .otp-code {
-  color: #4caf50;
+  color: #059669;
 }
 
-/* Modal styles remain the same */
+/* Modal styles */
+/* Modal styles */
 .modal {
   display: none;
   position: fixed;
@@ -147,7 +227,8 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(248, 250, 252, 0.95);
+  /* Solid opaque style instead of blur */
   z-index: 1000;
 }
 
@@ -158,13 +239,16 @@ body {
 }
 
 .modal-content {
-  background: #2a2a2a;
-  border-radius: 8px;
-  padding: 20px;
+  background: #ffffff;
+  /* White modal */
+  border-radius: 12px;
+  padding: 24px;
   width: 340px;
   max-height: 90vh;
   overflow-y: auto;
   scrollbar-width: none;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .modal-content::-webkit-scrollbar {
@@ -175,19 +259,20 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .modal-header h2 {
   font-size: 18px;
-  color: #e0e0e0;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 28px;
-  color: #999;
+  font-size: 24px;
+  color: #94a3b8;
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -195,118 +280,87 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
 .close-btn:hover {
-  color: #fff;
+  background: #f1f5f9;
+  color: #334155;
 }
 
 .settings-section h3 {
   font-size: 14px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: #334155;
   margin-bottom: 12px;
 }
 
 textarea {
   width: 100%;
   height: 100px;
-  padding: 10px;
-  border: 1px solid #3a3a3a;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
   resize: none;
   font-family: monospace;
-  margin-bottom: 12px;
-  background: #1a1a1a;
-  color: #e0e0e0;
+  margin-bottom: 16px;
+  background: #f8fafc;
+  color: #334155;
+  transition: border-color 0.2s;
 }
 
 textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #3b82f6;
+  background: #ffffff;
 }
 
 .btn {
   width: 100%;
-  background: #667eea;
+  background: #3b82f6;
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .btn:hover {
-  background: #5568d3;
+  background: #2563eb;
 }
 
 .btn-danger {
-  background: #f44336;
-  margin-top: 8px;
+  background: #ef4444;
+  margin-top: 12px;
 }
 
 .btn-danger:hover {
-  background: #d32f2f;
+  background: #dc2626;
 }
 
 .error {
-  background: #3a1a1a;
-  border: 1px solid #5a2a2a;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 12px;
-  color: #ff6b6b;
-  font-size: 12px;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  color: #ef4444;
+  font-size: 13px;
   display: none;
 }
 
 .info {
-  margin-top: 16px;
-  padding: 12px;
-  background: #1a2a3a;
-  border-radius: 6px;
-  font-size: 11px;
-  color: #64b5f6;
-  line-height: 1.6;
-}
-
-/* Color picker context menu */
-.color-picker-menu {
-  position: fixed;
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  margin-top: 20px;
+  padding: 16px;
+  background: #eff6ff;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  padding: 12px;
-  display: none;
-  z-index: 3000;
-  min-width: 200px;
-}
-
-.color-picker-menu.show {
-  display: block;
-}
-
-.color-picker-header {
   font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
-  font-weight: 600;
+  color: #3b82f6;
+  line-height: 1.6;
+  border: 1px solid #dbeafe;
 }
-
-#colorPickerInput {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #3a3a3a;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #1a1a1a;
-}
-
-#colorPickerInput:hover {
-  border-color: #555;
-}
-
-

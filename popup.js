@@ -1,13 +1,11 @@
 let accounts = [];
-let accountColors = {}; // Lưu màu cho từng account
-let currentContextAccount = null;
+
 
 // Load accounts from storage
 async function loadAccounts() {
   try {
-    const result = await chrome.storage.local.get(['accounts', 'accountColors']);
+    const result = await chrome.storage.local.get(['accounts']);
     accounts = result.accounts || [];
-    accountColors = result.accountColors || {};
     renderAccounts();
     if (accounts.length > 0) {
       updateAllOTP();
@@ -26,19 +24,7 @@ async function saveAccounts() {
   }
 }
 
-// Save account colors
-async function saveAccountColors() {
-  try {
-    await chrome.storage.local.set({ accountColors });
-  } catch (err) {
-    console.error('Error saving colors:', err);
-  }
-}
 
-// Get color for account
-function getAccountColor(index) {
-  return accountColors[index] || '#667eea';
-}
 
 // Decode base64
 function decodeBase64(str) {
@@ -132,7 +118,7 @@ function parseAccount(bytes) {
       }
 
       const value = bytes.slice(i, i + length);
-      
+
       if (fieldNum === 1) {
         account.secretBase32 = base32Encode(value);
       } else if (fieldNum === 2) {
@@ -150,7 +136,7 @@ function parseAccount(bytes) {
         if ((byte & 0x80) === 0) break;
         shift += 7;
       }
-      
+
       if (fieldNum === 4) account.type = value === 1 ? 'TOTP' : 'HOTP';
       if (fieldNum === 5) {
         account.digits = value && value > 0 ? value : 6;
@@ -175,13 +161,12 @@ function renderAccounts() {
   const accountsList = document.getElementById('accountsList');
 
   if (accounts.length === 0) {
-    emptyState.style.display = 'block';
+    emptyState.style.display = 'flex';
     accountsList.innerHTML = '';
   } else {
     emptyState.style.display = 'none';
-    
+
     accountsList.innerHTML = accounts.map((account, index) => {
-      const color = getAccountColor(index);
       return `
       <div class="account-item" data-index="${index}">
         <div class="account-info">
@@ -189,7 +174,7 @@ function renderAccounts() {
           ${account.issuer && account.name ? `<div class="account-issuer">${escapeHtml(account.name)}</div>` : ''}
         </div>
         <div class="otp-display">
-          <div class="otp-code" id="otp-${index}" style="color: ${color}">------</div>
+          <div class="otp-code" id="otp-${index}">------</div>
         </div>
       </div>
     `;
@@ -198,19 +183,9 @@ function renderAccounts() {
     // Add click listeners to account items
     document.querySelectorAll('.account-item').forEach(item => {
       // Left click - copy code
-      item.addEventListener('click', function(e) {
-        if (e.button === 0) { // Left click
-          const index = parseInt(this.dataset.index);
-          copyCode(index);
-        }
-      });
-
-      // Right click - show color picker
-      item.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
+      item.addEventListener('click', function (e) {
         const index = parseInt(this.dataset.index);
-        currentContextAccount = index;
-        showColorPicker(e.pageX, e.pageY);
+        copyCode(index);
       });
     });
   }
@@ -228,7 +203,7 @@ async function updateAllOTP() {
   for (let i = 0; i < accounts.length; i++) {
     const account = accounts[i];
     const otpElement = document.getElementById(`otp-${i}`);
-    
+
     if (otpElement) {
       try {
         console.log(`Generating OTP for ${account.issuer || account.name} with ${account.digits} digits`);
@@ -261,15 +236,15 @@ function updateTimer() {
 async function copyCode(index) {
   const otpElement = document.getElementById(`otp-${index}`);
   const itemElement = document.querySelector(`.account-item[data-index="${index}"]`);
-  
+
   if (!otpElement) return;
-  
+
   const code = otpElement.textContent;
-  
+
   if (code !== 'ERROR' && code !== '------') {
     try {
       await navigator.clipboard.writeText(code);
-      
+
       // Visual feedback on item
       if (itemElement) {
         itemElement.classList.add('copied');
@@ -283,74 +258,14 @@ async function copyCode(index) {
   }
 }
 
-// Show color picker menu
-function showColorPicker(x, y) {
-  const menu = document.getElementById('colorPickerMenu');
-  const input = document.getElementById('colorPickerInput');
-  
-  // Set current color
-  if (currentContextAccount !== null) {
-    const currentColor = getAccountColor(currentContextAccount);
-    input.value = currentColor;
-  }
-  
-  // Show menu first to get its dimensions
-  menu.classList.add('show');
-  
-  // Get menu dimensions
-  const menuRect = menu.getBoundingClientRect();
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  
-  // Calculate position to keep menu within viewport
-  let left = x;
-  let top = y;
-  
-  // Adjust horizontal position if menu would overflow right
-  if (left + menuRect.width > viewportWidth) {
-    left = viewportWidth - menuRect.width - 10;
-  }
-  
-  // Adjust vertical position if menu would overflow bottom
-  if (top + menuRect.height > viewportHeight) {
-    top = viewportHeight - menuRect.height - 10;
-  }
-  
-  // Ensure menu doesn't go off left or top edge
-  if (left < 10) left = 10;
-  if (top < 10) top = 10;
-  
-  menu.style.left = left + 'px';
-  menu.style.top = top + 'px';
-}
 
-// Hide color picker menu
-function hideColorPicker() {
-  const menu = document.getElementById('colorPickerMenu');
-  menu.classList.remove('show');
-  currentContextAccount = null;
-}
-
-// Apply color to account
-async function applyColorToAccount(index, color) {
-  accountColors[index] = color;
-  await saveAccountColors();
-  
-  // Update the OTP code color immediately
-  const otpElement = document.getElementById(`otp-${index}`);
-  if (otpElement) {
-    otpElement.style.color = color;
-  }
-  
-  hideColorPicker();
-}
 
 // Open modal
 function openSettings() {
   const modal = document.getElementById('settingsModal');
   const input = document.getElementById('uriInput');
   const error = document.getElementById('modalError');
-  
+
   modal.classList.add('active');
   input.value = '';
   error.style.display = 'none';
@@ -410,7 +325,7 @@ async function clearAccounts() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Event listeners
   const settingsBtn = document.getElementById('settingsBtn');
   const closeSettingsBtn = document.getElementById('closeSettingsBtn');
@@ -424,38 +339,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (submitBtn) submitBtn.addEventListener('click', addAccounts);
 
   // Color picker event listeners
-  const colorPickerInput = document.getElementById('colorPickerInput');
-  if (colorPickerInput) {
-    colorPickerInput.addEventListener('change', function() {
-      const color = this.value;
-      if (currentContextAccount !== null) {
-        applyColorToAccount(currentContextAccount, color);
-      }
-    });
-    
-    // Also update on input (real-time preview)
-    colorPickerInput.addEventListener('input', function() {
-      const color = this.value;
-      if (currentContextAccount !== null) {
-        const otpElement = document.getElementById(`otp-${currentContextAccount}`);
-        if (otpElement) {
-          otpElement.style.color = color;
-        }
-      }
-    });
-  }
 
-  // Hide color picker when clicking outside
-  document.addEventListener('click', function(e) {
-    const menu = document.getElementById('colorPickerMenu');
-    if (!menu.contains(e.target) && e.button === 0) {
-      hideColorPicker();
-    }
-  });
 
   // Close modal when clicking outside
   if (modal) {
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
       if (e.target === modal) {
         closeSettings();
       }
