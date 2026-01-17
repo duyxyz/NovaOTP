@@ -206,6 +206,32 @@ function parseAccount(bytes) {
   return account;
 }
 
+function createRipple(event) {
+  const button = event.currentTarget;
+  const ripple = document.createElement("span");
+  const rect = button.getBoundingClientRect();
+
+  const size = Math.max(rect.width, rect.height);
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  ripple.style.width = ripple.style.height = `${size}px`;
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+  ripple.classList.add("ripple");
+
+  const prevRipple = button.getElementsByClassName("ripple")[0];
+  if (prevRipple) {
+    prevRipple.remove();
+  }
+
+  button.appendChild(ripple);
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
+}
+
 // Render accounts - LIST VERSION
 function renderAccounts() {
   const emptyState = document.getElementById('emptyState');
@@ -222,6 +248,12 @@ function renderAccounts() {
     accountsList.innerHTML = accounts.map((account, index) => {
       return `
       <div class="account-item" data-index="${index}">
+        <div class="drag-handle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
+            <circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+          </svg>
+        </div>
         <div class="account-info">
           <div class="account-name">${escapeHtml(account.issuer || account.name)}</div>
           ${account.issuer && account.name ? `<div class="account-issuer">${escapeHtml(account.name)}</div>` : ''}
@@ -233,12 +265,63 @@ function renderAccounts() {
     `;
     }).join('');
 
-    // Add click listeners to account items
+    // Add click and drag listeners to account items
     document.querySelectorAll('.account-item').forEach(item => {
+      const handle = item.querySelector('.drag-handle');
+
+      // Only set draggable true when interacting with handle to prevent accidental drags on text
+      handle.addEventListener('mousedown', () => item.setAttribute('draggable', 'true'));
+      handle.addEventListener('mouseup', () => item.removeAttribute('draggable'));
+
       item.addEventListener('click', function (e) {
+        if (this.classList.contains('dragging') || e.target.closest('.drag-handle')) return;
+        createRipple(e);
         const index = parseInt(this.dataset.index);
         copyCode(index);
       });
+
+      item.addEventListener('dragstart', (e) => {
+        // Double check it's the handle being dragged
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      item.addEventListener('dragend', async () => {
+        item.classList.remove('dragging');
+        item.removeAttribute('draggable');
+
+        // Finalize order
+        const list = document.getElementById('accountsList');
+        const newOrderIndices = [...list.querySelectorAll('.account-item')].map(i => parseInt(i.dataset.index));
+        const newAccounts = newOrderIndices.map(oldIdx => accounts[oldIdx]);
+        accounts = newAccounts;
+        await saveAccounts();
+        renderAccounts(); // Refresh indices
+        updateAllOTP();
+      });
+    });
+
+    const list = document.getElementById('accountsList');
+    list.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const draggingItem = document.querySelector('.dragging');
+      if (!draggingItem) return;
+
+      const afterElement = Array.from(list.querySelectorAll('.account-item:not(.dragging)')).reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = e.clientY - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+      if (afterElement == null) {
+        list.appendChild(draggingItem);
+      } else {
+        list.insertBefore(draggingItem, afterElement);
+      }
     });
 
     // Reapply current search filter
@@ -447,11 +530,16 @@ function renderDeleteList() {
   if (selectAll) selectAll.disabled = false;
 
   container.innerHTML = accounts.map((acc, idx) => `
-    <label class="delete-list-item">
+    <label class="delete-list-item" data-idx="${idx}">
       <input type="checkbox" class="delete-checkbox" value="${idx}">
       <span>${escapeHtml(acc.issuer ? acc.issuer + ' (' + acc.name + ')' : acc.name)}</span>
     </label>
   `).join('');
+
+  // Add click listeners for ripple in delete list
+  document.querySelectorAll('.delete-list-item').forEach(item => {
+    item.addEventListener('click', createRipple);
+  });
 
   deleteBtn.style.display = 'block';
 

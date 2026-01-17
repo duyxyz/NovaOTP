@@ -17,6 +17,9 @@
   --accent-blue-hover: #2563eb;
   --accent-danger: #ef4444;
   --accent-danger-hover: #dc2626;
+  --bg-item-active: #e2e8f0;
+  --ripple-bg: rgba(0, 0, 0, 0.1);
+  /* Dark ripple for light mode */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -33,12 +36,16 @@
     --bg-tab-active: rgba(59, 130, 246, 0.2);
     --bg-tab-hover: rgba(255, 255, 255, 0.05);
     --bg-item-hover: #1c1f26;
+    --bg-item-active: #2d323d;
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
     --border-primary: #2d323d;
     --border-input: #3a404d;
     --accent-blue: #60a5fa;
+    --bg-item-active: #2d323d;
+    --ripple-bg: rgba(255, 255, 255, 0.15);
+    /* Light ripple for dark mode */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 }
@@ -240,20 +247,43 @@ body {
 
 /* Account item */
 .account-item {
-  background: var(--bg-card);
+  background: transparent;
   border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-primary);
+  border-radius: 0;
+  padding: 12px 16px 12px 8px;
+  margin-bottom: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  transition: none;
+  gap: 8px;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
   box-shadow: none;
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  color: var(--text-muted);
+  cursor: grab;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.drag-handle:hover {
+  color: var(--text-secondary);
+}
+
+.dragging .drag-handle {
+  cursor: grabbing;
 }
 
 .account-info {
@@ -297,7 +327,7 @@ body {
 }
 
 .account-item.copied {
-  animation: pulse 0.3s ease-in-out;
+  animation: flash 0.3s ease-in-out;
 }
 
 /* Modal styling */
@@ -507,24 +537,25 @@ input[type="number"]:focus {
 }
 
 /* Animations */
-@keyframes pulse {
+@keyframes flash {
   0% {
-    transform: scale(1);
+    opacity: 1;
   }
 
   50% {
-    transform: scale(1.02);
+    opacity: 0.7;
   }
 
   100% {
-    transform: scale(1);
+    opacity: 1;
   }
 }
 
 .delete-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  /* Removed gap to make separators even */
   overflow-y: auto;
   flex: 1;
   padding-right: 4px;
@@ -541,15 +572,38 @@ input[type="number"]:focus {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--bg-card);
+  background: transparent;
   border: none;
-  border-radius: 12px;
+  border-bottom: 1px solid var(--border-primary);
+  border-radius: 0;
   cursor: pointer;
-  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
-.delete-list-item:hover {
-  background: var(--bg-tab-hover);
+.delete-list-item:last-child {
+  border-bottom: none;
+}
+
+.ripple {
+  position: absolute;
+  background: var(--ripple-bg);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ripple-animation 0.5s ease-out;
+}
+
+@keyframes ripple-animation {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
 }
 
 input[type="checkbox"] {
@@ -586,4 +640,10 @@ input[type="checkbox"]:checked {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.account-item.dragging {
+  opacity: 0.4;
+  background: var(--bg-item-active);
+  cursor: grabbing;
 }
