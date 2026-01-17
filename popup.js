@@ -709,9 +709,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // GitHub Buttons
   const ghBackupBtn = document.getElementById('githubBackupBtn');
   const ghRestoreBtn = document.getElementById('githubRestoreBtn');
+  const openGuideBtn = document.getElementById('openGuideBtn');
 
   if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
   if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+  if (openGuideBtn) {
+    openGuideBtn.addEventListener('click', () => {
+      chrome.tabs.create({ url: 'guide.html' });
+    });
+  }
   if (deleteSelectedBtn) deleteSelectedBtn.addEventListener('click', deleteSelectedAccounts);
   if (selectAllCheckbox) selectAllCheckbox.addEventListener('change', toggleSelectAll);
   if (submitBtn) submitBtn.addEventListener('click', addAccounts);

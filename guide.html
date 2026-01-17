@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide | OTP Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --indigo: #6366f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-800);
+            line-height: 1.4;
+            overflow: hidden;
+            /* Prevent scrolling */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* Remove justify-content: center to avoid top gap */
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--indigo) 100%);
+            color: white;
+            padding: 50px 20px;
+            /* Balanced padding */
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            flex: 1;
+            /* Take up all remaining space */
+            background: var(--slate-50);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            /* Ensure grid takes full width of its flex container */
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: var(--primary);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--slate-900);
+        }
+
+        .card p {
+            color: var(--slate-700);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .step-list {
+            list-style: none;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--slate-700);
+        }
+
+        .step-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        .step-list li::after {
+            content: "";
+            position: absolute;
+            left: 3px;
+            top: 10px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        code {
+            background: var(--slate-100);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #ef4444;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--slate-700);
+            font-size: 13px;
+            background: transparent;
+            /* Changed to transparent for cleaner look */
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero {
+                padding: 60px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="hero">
+        <div class="badge">Documentation</div>
+        <h1>OTP Viewer Guide</h1>
+        <p>Simple, secure, and powerful two-factor authentication management for your browser.</p>
+    </section>
+
+    <div class="main-container">
+        <div class="grid">
+            <!-- Manual Entry -->
+            <div class="card">
+                <div class="icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                </div>
+                <h2>Manual Entry</h2>
+                <p>Perfect for adding accounts when you only have a secret key without a QR code.</p>
+                <ul class="step-list">
+                    <li>Open <strong>Settings</strong> and stay on <strong>Manual Entry</strong>.</li>
+                    <li>Enter an <strong>Account Name</strong> (e.g. your email).</li>
+                    <li>Enter the <strong>Issuer</strong> name (e.g. Google).</li>
+                    <li>Paste your <strong>Secret Key</strong> (Base32 format).</li>
+                </ul>
+            </div>
+
+            <!-- Google Import -->
+            <div class="card">
+                <div class="icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                </div>
+                <h2>Google Import</h2>
+                <p>Transfer all your existing accounts from your mobile device instantly.</p>
+                <ul class="step-list">
+                    <li>In Google Authenticator app: <strong>Settings → Transfer → Export</strong>.</li>
+                    <li>Scan the generated QR code with a reader to get the link.</li>
+                    <li>Copy the <code>otpauth-migration://</code> URL.</li>
+                    <li>Paste it into the <strong>Google Import</strong> tab.</li>
+                </ul>
+            </div>
+
+            <!-- GitHub Backup -->
+            <div class="card">
+                <div class="icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                        </path>
+                    </svg>
+                </div>
+                <h2>GitHub Sync</h2>
+                <p>Automatically back up your data to a private GitHub Project v2.</p>
+                <ul class="step-list">
+                    <li>Create a <strong>PAT</strong> (Token) with the <code>project</code> scope.</li>
+                    <li>Create a GitHub <strong>Project (v2)</strong> and get its number.</li>
+                    <li>The data is stored as a <strong>Draft Issue</strong> named <code>TOTP_BACKUP_DATA</code>.</li>
+                </ul>
+            </div>
+
+            <!-- Management -->
+            <div class="card">
+                <div class="icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </div>
+                <h2>Data Clean up</h2>
+                <p>Manage your account list and keep it organized with easy deletion.</p>
+                <ul class="step-list">
+                    <li>Navigate to the <strong>Delete</strong> tab in Settings.</li>
+                    <li>Check the items you want to remove.</li>
+                    <li>Use <strong>Select All</strong> for quick batch operations.</li>
+                    <li>Confirm via our secure custom dialog.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

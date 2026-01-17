@@ -148,6 +148,13 @@ body {
   transform: rotate(45deg);
 }
 
+#openGuideBtn:hover {
+  opacity: 1 !important;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+
 .settings-btn svg {
   width: 20px;
   height: 20px;
@@ -303,7 +310,8 @@ body {
   padding: 12px;
   background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  margin: -24px -24px 20px -24px;
+  margin: -24px -24px 16px -24px;
+  /* Reduced margin-bottom to 16px */
 }
 
 .modal-title-wrapper {
@@ -338,9 +346,9 @@ body {
 .tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 8px;
+  padding-bottom: 16px;
 }
 
 .tab {
@@ -477,10 +485,11 @@ input[type="number"]:focus {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
   overflow-y: auto;
   flex: 1;
   padding-right: 4px;
+  margin: 0;
+  /* Clear margins to rely on container padding */
 }
 
 .delete-list::-webkit-scrollbar {
@@ -495,10 +504,10 @@ input[type="number"]:focus {
 .delete-list-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 12px;
+  padding: 12px 16px;
   background: #f8fafc;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
