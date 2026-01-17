@@ -465,18 +465,27 @@ function renderDeleteList() {
 }
 
 // Delete selected accounts
-async function deleteSelectedAccounts() {
+function deleteSelectedAccounts() {
   const checked = document.querySelectorAll('.delete-checkbox:checked');
   if (checked.length === 0) {
     alert('Please select at least 1 account to delete');
     return;
   }
 
-  if (!confirm(`Are you sure you want to delete ${checked.length} selected accounts?`)) {
-    return;
-  }
+  const confirmModal = document.getElementById('confirmModal');
+  const confirmMsg = document.getElementById('confirmMessage');
 
+  confirmMsg.textContent = `Are you sure you want to delete ${checked.length} selected accounts? This action cannot be undone.`;
+
+  confirmModal.style.display = 'block';
+  setTimeout(() => confirmModal.classList.add('active'), 10);
+}
+
+// Actual deletion logic
+async function confirmDelete() {
+  const checked = document.querySelectorAll('.delete-checkbox:checked');
   const indicesToDelete = new Set(Array.from(checked).map(cb => parseInt(cb.value)));
+
   accounts = accounts.filter((_, index) => !indicesToDelete.has(index));
 
   await saveAccounts();
@@ -487,6 +496,14 @@ async function deleteSelectedAccounts() {
   if (accounts.length === 0) {
     document.getElementById('deleteSelectedBtn').style.display = 'none';
   }
+
+  closeConfirmModal();
+}
+
+function closeConfirmModal() {
+  const confirmModal = document.getElementById('confirmModal');
+  confirmModal.classList.remove('active');
+  setTimeout(() => confirmModal.style.display = 'none', 300);
 }
 
 // GitHub Backup Functions (Project v2)
@@ -700,6 +717,19 @@ document.addEventListener('DOMContentLoaded', function () {
   if (submitBtn) submitBtn.addEventListener('click', addAccounts);
   if (submitManualBtn) submitManualBtn.addEventListener('click', addManualAccount);
 
+  // Custom Confirm Modal Buttons
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+  const confirmModal = document.getElementById('confirmModal');
+
+  if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', confirmDelete);
+  if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeConfirmModal);
+  if (confirmModal) {
+    confirmModal.addEventListener('click', (e) => {
+      if (e.target === confirmModal) closeConfirmModal();
+    });
+  }
+
   if (ghBackupBtn) ghBackupBtn.addEventListener('click', backupToGitHub);
   if (ghRestoreBtn) ghRestoreBtn.addEventListener('click', restoreFromGitHub);
 
@@ -725,7 +755,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const targetId = `tab-${tab.dataset.tab}`;
       document.getElementById(targetId).classList.add('active');
 
-      if (tab.dataset.tab === 'options') {
+      if (tab.dataset.tab === 'delete') {
         renderDeleteList();
       }
 
