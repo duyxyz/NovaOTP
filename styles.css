@@ -7,12 +7,9 @@
 body {
   width: 380px;
   height: 520px;
-  /* Fixed height */
   font-family: system-ui, -apple-system, sans-serif;
   background: #f8fafc;
-  /* Light slate background */
   color: #334155;
-  /* Dark slate text */
   overflow: hidden;
 }
 
@@ -23,33 +20,107 @@ body {
   flex-direction: column;
 }
 
-.settings-btn-float {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
+/* Header - Fixed alignment */
+.header {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.search-container {
+  flex: 1;
+  position: relative;
+  height: 36px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-container .search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  font-size: 13px;
+  background: #f8fafc;
+  color: #334155;
+  transition: all 0.2s;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+.clear-search {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.clear-search:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.settings-btn {
   background: #3b82f6;
   border: none;
   color: white;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  z-index: 100;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.settings-btn-float:hover {
+.settings-btn:hover {
   background: #2563eb;
-  transform: scale(1.05);
 }
 
-.settings-btn-float svg {
-  width: 20px;
-  height: 20px;
+.settings-btn svg {
+  width: 18px;
+  height: 18px;
 }
 
 .content {
@@ -57,7 +128,6 @@ body {
   padding: 8px;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: 70px;
   display: flex;
   flex-direction: column;
 }
@@ -88,12 +158,7 @@ body {
   margin-top: 8px;
 }
 
-/* Account item - no card, just list */
-/* Account item - Card Style */
-/* Account item - Card Style */
-/* Account item - Compact List Style */
-/* Account item - Sleek Modern Row */
-/* Account item - Sleek Modern Row (Light - No Glow) */
+/* Account item */
 .account-item {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -102,7 +167,6 @@ body {
   margin-bottom: 8px;
   display: flex;
   flex-direction: row;
-  /* Horizontal layout */
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -111,18 +175,15 @@ body {
   position: relative;
   overflow: hidden;
   box-shadow: none;
-  /* Removed shadow */
 }
 
 .account-item:hover {
   transform: translateY(-1px);
   border-color: #3b82f6;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  /* Very crisp, subtle shadow only */
   background: #f8fafc;
 }
 
-/* Accent bar on left */
 .account-item::before {
   content: "";
   position: absolute;
@@ -136,8 +197,10 @@ body {
 
 .account-item:hover::before {
   opacity: 1;
-  box-shadow: none;
-  /* Removed glow */
+}
+
+.account-item.hidden {
+  display: none;
 }
 
 .separator {
@@ -152,14 +215,12 @@ body {
   align-items: flex-start;
   gap: 3px;
   padding-left: 8px;
-  /* Space for accent bar */
 }
 
 .account-name {
   font-size: 14px;
   font-weight: 600;
   color: #1e293b;
-  /* Dark text */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -170,7 +231,6 @@ body {
 .account-issuer {
   font-size: 11px;
   color: #64748b;
-  /* Medium gray */
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -197,7 +257,6 @@ body {
   font-weight: 700;
   font-family: 'Courier New', monospace;
   color: #2563eb;
-  /* Strong Blue */
   letter-spacing: 3px;
   white-space: nowrap;
   text-shadow: none;
@@ -208,7 +267,6 @@ body {
   text-shadow: none;
 }
 
-/* Copy feedback */
 .account-item.copied {
   background: #ecfdf5;
   border-color: #34d399;
@@ -218,8 +276,7 @@ body {
   color: #059669;
 }
 
-/* Modal styles */
-/* Modal styles */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -228,39 +285,31 @@ body {
   right: 0;
   bottom: 0;
   background: rgba(248, 250, 252, 0.95);
-  /* Solid opaque style instead of blur */
   z-index: 1000;
 }
 
 .modal.active {
   display: block;
-  /* Change from flex center to block */
 }
 
 .modal-content {
   background: #ffffff;
   width: 100%;
   height: 100%;
-  /* Full screen height */
   max-height: 100%;
-  /* Remove max-height limit */
   border-radius: 0;
-  /* Removing border radius for full screen feel */
   padding: 24px;
   overflow-y: auto;
   border: none;
   box-shadow: none;
   position: absolute;
-  /* Position absolute to control slide effect */
   bottom: -100%;
-  /* Start off screen */
   left: 0;
   transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal.active .modal-content {
   bottom: 0;
-  /* Slide up to fill screen */
 }
 
 .modal-content::-webkit-scrollbar {
@@ -269,15 +318,27 @@ body {
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  margin: -24px -24px 20px -24px;
+}
+
+.modal-title-wrapper {
+  flex: 1;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
 }
 
 .modal-header h2 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #1e293b;
+  margin: 0;
 }
 
 .close-btn {
@@ -308,7 +369,6 @@ body {
   margin-bottom: 12px;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 8px;
@@ -347,9 +407,10 @@ body {
   display: block;
 }
 
-/* Inputs */
 textarea,
-input[type="text"] {
+input[type="text"],
+input[type="password"],
+input[type="number"] {
   width: 100%;
   padding: 12px;
   border: 1px solid #cbd5e1;
@@ -369,7 +430,9 @@ textarea {
 }
 
 textarea:focus,
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus {
   outline: none;
   border-color: #3b82f6;
   background: #ffffff;
@@ -386,6 +449,10 @@ input[type="text"]:focus {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn:hover {
@@ -423,10 +490,8 @@ input[type="text"]:focus {
   border: 1px solid #dbeafe;
 }
 
-/* Delete List in Options Tab */
 .delete-list {
   max-height: 300px;
-  /* Reduced further */
   overflow-y: auto;
   border: 1px solid #cbd5e1;
   border-radius: 8px;

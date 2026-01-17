@@ -1,5 +1,5 @@
 let accounts = [];
-
+let currentSearchQuery = '';
 
 // Load accounts from storage
 async function loadAccounts() {
@@ -24,7 +24,59 @@ async function saveAccounts() {
   }
 }
 
+// Search/Filter accounts
+function filterAccounts(query) {
+  currentSearchQuery = query.toLowerCase().trim();
+  const clearBtn = document.getElementById('clearSearch');
 
+  // Show/hide clear button
+  clearBtn.style.display = currentSearchQuery ? 'flex' : 'none';
+
+  const accountItems = document.querySelectorAll('.account-item');
+  const emptyState = document.getElementById('emptyState');
+  const noResults = document.getElementById('noResults');
+  const accountsList = document.getElementById('accountsList');
+
+  let visibleCount = 0;
+
+  accountItems.forEach((item, index) => {
+    const account = accounts[index];
+    if (!account) return;
+
+    const searchText = `${account.name} ${account.issuer}`.toLowerCase();
+    const isMatch = searchText.includes(currentSearchQuery);
+
+    if (isMatch || !currentSearchQuery) {
+      item.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+
+  // Show appropriate state
+  if (accounts.length === 0) {
+    emptyState.style.display = 'flex';
+    noResults.style.display = 'none';
+    accountsList.style.display = 'block';
+  } else if (visibleCount === 0 && currentSearchQuery) {
+    emptyState.style.display = 'none';
+    noResults.style.display = 'flex';
+    accountsList.style.display = 'none';
+  } else {
+    emptyState.style.display = 'none';
+    noResults.style.display = 'none';
+    accountsList.style.display = 'block';
+  }
+}
+
+// Clear search
+function clearSearch() {
+  const searchInput = document.getElementById('searchInput');
+  searchInput.value = '';
+  filterAccounts('');
+  searchInput.focus();
+}
 
 // Decode base64
 function decodeBase64(str) {
@@ -146,7 +198,6 @@ function parseAccount(bytes) {
     }
   }
 
-  // Force 6 digits nếu không hợp lệ
   if (!account.digits || account.digits < 6 || account.digits > 8) {
     account.digits = 6;
   }
@@ -159,9 +210,11 @@ function parseAccount(bytes) {
 function renderAccounts() {
   const emptyState = document.getElementById('emptyState');
   const accountsList = document.getElementById('accountsList');
+  const noResults = document.getElementById('noResults');
 
   if (accounts.length === 0) {
     emptyState.style.display = 'flex';
+    noResults.style.display = 'none';
     accountsList.innerHTML = '';
   } else {
     emptyState.style.display = 'none';
@@ -178,16 +231,20 @@ function renderAccounts() {
         </div>
       </div>
     `;
-    }).join('<div class="separator"></div>');
+    }).join('');
 
     // Add click listeners to account items
     document.querySelectorAll('.account-item').forEach(item => {
-      // Left click - copy code
       item.addEventListener('click', function (e) {
         const index = parseInt(this.dataset.index);
         copyCode(index);
       });
     });
+
+    // Reapply current search filter
+    if (currentSearchQuery) {
+      filterAccounts(currentSearchQuery);
+    }
   }
 }
 
@@ -258,8 +315,6 @@ async function copyCode(index) {
   }
 }
 
-
-
 // Open modal
 function openSettings() {
   const modal = document.getElementById('settingsModal');
@@ -267,7 +322,6 @@ function openSettings() {
   const error = document.getElementById('modalError');
 
   modal.style.display = 'block';
-  // Force reflow
   modal.offsetHeight;
   modal.classList.add('active');
 
@@ -280,10 +334,9 @@ function closeSettings() {
   const modal = document.getElementById('settingsModal');
   modal.classList.remove('active');
 
-  // Wait for transition to finish before hiding
   setTimeout(() => {
     modal.style.display = 'none';
-  }, 300); // match transition duration
+  }, 300);
 }
 
 // Add accounts from URI
@@ -311,7 +364,6 @@ async function addAccounts() {
       throw new Error('No accounts found in data');
     }
 
-    // Add new accounts
     accounts.push(...newAccounts);
     await saveAccounts();
     renderAccounts();
@@ -337,7 +389,6 @@ async function addManualAccount() {
     if (!name) throw new Error('Please enter account name');
     if (!secret) throw new Error('Please enter Secret Key');
 
-    // Validate Base32
     const base32Regex = /^[A-Z2-7]+=*$/;
     if (!base32Regex.test(secret)) {
       throw new Error('Invalid Secret Key (Only A-Z and 2-7 allowed)');
@@ -352,13 +403,11 @@ async function addManualAccount() {
       period: 30
     };
 
-    // Add and save
     accounts.push(newAccount);
     await saveAccounts();
     renderAccounts();
     updateAllOTP();
 
-    // Clear inputs upon success
     document.getElementById('manualName').value = '';
     document.getElementById('manualIssuer').value = '';
     document.getElementById('manualSecret').value = '';
@@ -386,7 +435,6 @@ function renderDeleteList() {
 
   if (!container) return;
 
-  // Reset select all checkbox
   if (selectAll) selectAll.checked = false;
 
   if (accounts.length === 0) {
@@ -407,7 +455,6 @@ function renderDeleteList() {
 
   deleteBtn.style.display = 'block';
 
-  // Add listener to individual checkboxes to update Select All state
   const checkboxes = document.querySelectorAll('.delete-checkbox');
   checkboxes.forEach(cb => {
     cb.addEventListener('change', () => {
@@ -429,30 +476,208 @@ async function deleteSelectedAccounts() {
     return;
   }
 
-  // Get indices to delete
   const indicesToDelete = new Set(Array.from(checked).map(cb => parseInt(cb.value)));
-
-  // Filter out deleted accounts
   accounts = accounts.filter((_, index) => !indicesToDelete.has(index));
 
   await saveAccounts();
-
-  // Update UI main list
   renderAccounts();
-  updateAllOTP(); // Generate codes for remaining accounts
-
-  // Update delete list in modal
+  updateAllOTP();
   renderDeleteList();
 
-  // If no accounts left, update empty state visuals manually if needed or just let renderAccounts handle it
   if (accounts.length === 0) {
     document.getElementById('deleteSelectedBtn').style.display = 'none';
   }
 }
 
+// GitHub Backup Functions (Project v2)
+async function loadGitSettings() {
+  const result = await chrome.storage.local.get(['ghToken', 'ghProjNum']);
+  if (result.ghToken) document.getElementById('githubToken').value = result.ghToken;
+  if (result.ghProjNum) document.getElementById('githubProjectNumber').value = result.ghProjNum;
+  return result;
+}
+
+async function saveGitSettings(token, projNum) {
+  await chrome.storage.local.set({ ghToken: token, ghProjNum: projNum });
+}
+
+async function githubGraphQL(token, query, variables = {}) {
+  const response = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query, variables })
+  });
+  const data = await response.json();
+  if (data.errors) {
+    throw new Error(data.errors[0].message);
+  }
+  return data.data;
+}
+
+async function backupToGitHub() {
+  const token = document.getElementById('githubToken').value.trim();
+  const projNumStr = document.getElementById('githubProjectNumber').value.trim();
+  const statusMsg = document.getElementById('githubMsg');
+
+  statusMsg.style.display = 'block';
+  statusMsg.style.color = '#3b82f6';
+  statusMsg.textContent = 'Backing up to Project...';
+
+  if (!token || !projNumStr) {
+    statusMsg.style.color = '#ef4444';
+    statusMsg.textContent = 'Token and Project # are required.';
+    return;
+  }
+
+  const projNum = parseInt(projNumStr);
+
+  try {
+    const backupTitle = 'TOTP_BACKUP_DATA';
+    const content = JSON.stringify(accounts, null, 2);
+
+    // Get Project ID from viewer (personal account)
+    const findProj = `
+      query($number: Int!) {
+        viewer {
+          projectV2(number: $number) {
+            id
+            items(first: 100) {
+              nodes {
+                id
+                content {
+                  ... on DraftIssue {
+                    id
+                    title
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const projData = await githubGraphQL(token, findProj, { number: projNum });
+    const project = projData.viewer && projData.viewer.projectV2;
+
+    if (!project) throw new Error('Project not found in your account.');
+
+    // Find existing backup item
+    const existingItem = project.items.nodes.find(node => node.content && node.content.title === backupTitle);
+
+    if (existingItem) {
+      const updateMut = `
+        mutation($id: ID!, $body: String!) {
+          updateProjectV2DraftIssue(input: {draftIssueId: $id, body: $body}) {
+            draftIssue { id }
+          }
+        }
+      `;
+      await githubGraphQL(token, updateMut, { id: existingItem.content.id, body: content });
+    } else {
+      const addMut = `
+        mutation($projectId: ID!, $title: String!, $body: String!) {
+          addProjectV2DraftIssue(input: {projectId: $projectId, title: $title, body: $body}) {
+            projectItem { id }
+          }
+        }
+      `;
+      await githubGraphQL(token, addMut, { projectId: project.id, title: backupTitle, body: content });
+    }
+
+    await saveGitSettings(token, projNumStr);
+    statusMsg.style.color = '#166534';
+    statusMsg.textContent = 'Backup to Project success!';
+  } catch (err) {
+    statusMsg.style.color = '#ef4444';
+    statusMsg.textContent = err.message;
+  }
+}
+
+async function restoreFromGitHub() {
+  const token = document.getElementById('githubToken').value.trim();
+  const projNumStr = document.getElementById('githubProjectNumber').value.trim();
+  const statusMsg = document.getElementById('githubMsg');
+
+  statusMsg.style.display = 'block';
+  statusMsg.style.color = '#3b82f6';
+  statusMsg.textContent = 'Restoring from Project...';
+
+  if (!token || !projNumStr) {
+    statusMsg.style.color = '#ef4444';
+    statusMsg.textContent = 'Token and Project # are required.';
+    return;
+  }
+
+  const projNum = parseInt(projNumStr);
+
+  try {
+    const backupTitle = 'TOTP_BACKUP_DATA';
+
+    const findProj = `
+      query($number: Int!) {
+        viewer {
+          projectV2(number: $number) {
+            items(first: 100) {
+              nodes {
+                content {
+                  ... on DraftIssue {
+                    title
+                    body
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const projData = await githubGraphQL(token, findProj, { number: projNum });
+    const project = projData.viewer && projData.viewer.projectV2;
+
+    if (!project) throw new Error('Project not found in your account.');
+
+    const backupItem = project.items.nodes.find(node => node.content && node.content.title === backupTitle);
+
+    if (!backupItem || !backupItem.content.body) {
+      throw new Error('No backup found in this project.');
+    }
+
+    const restoredAccounts = JSON.parse(backupItem.content.body);
+
+    if (Array.isArray(restoredAccounts)) {
+      const currentSecrets = new Set(accounts.map(a => a.secretBase32));
+      let addedCount = 0;
+
+      restoredAccounts.forEach(acc => {
+        if (!currentSecrets.has(acc.secretBase32)) {
+          accounts.push(acc);
+          addedCount++;
+        }
+      });
+
+      await saveAccounts();
+      await saveGitSettings(token, projNumStr);
+      renderAccounts();
+      updateAllOTP();
+
+      statusMsg.style.color = '#166534';
+      statusMsg.textContent = `Restored! Added ${addedCount} accounts.`;
+    } else {
+      throw new Error('Invalid backup format in Project.');
+    }
+  } catch (err) {
+    statusMsg.style.color = '#ef4444';
+    statusMsg.textContent = err.message;
+  }
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
-  // Event listeners
   const settingsBtn = document.getElementById('settingsBtn');
   const closeSettingsBtn = document.getElementById('closeSettingsBtn');
   const submitBtn = document.getElementById('submitBtn');
@@ -461,6 +686,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const selectAllCheckbox = document.getElementById('selectAllCheckbox');
   const modal = document.getElementById('settingsModal');
   const tabs = document.querySelectorAll('.tab');
+  const searchInput = document.getElementById('searchInput');
+  const clearSearchBtn = document.getElementById('clearSearch');
+
+  // GitHub Buttons
+  const ghBackupBtn = document.getElementById('githubBackupBtn');
+  const ghRestoreBtn = document.getElementById('githubRestoreBtn');
 
   if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
   if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
@@ -469,33 +700,43 @@ document.addEventListener('DOMContentLoaded', function () {
   if (submitBtn) submitBtn.addEventListener('click', addAccounts);
   if (submitManualBtn) submitManualBtn.addEventListener('click', addManualAccount);
 
+  if (ghBackupBtn) ghBackupBtn.addEventListener('click', backupToGitHub);
+  if (ghRestoreBtn) ghRestoreBtn.addEventListener('click', restoreFromGitHub);
+
+  // Search functionality
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      filterAccounts(e.target.value);
+    });
+  }
+
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener('click', clearSearch);
+  }
+
   // Tab Switching Logic
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      // Remove active from all tabs and contents
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-      // Add active to clicked tab
       tab.classList.add('active');
 
-      // Show corresponding content
       const targetId = `tab-${tab.dataset.tab}`;
       document.getElementById(targetId).classList.add('active');
 
-      // If clicking Options tab, render the delete list
       if (tab.dataset.tab === 'options') {
         renderDeleteList();
       }
 
-      // Clear errors
+      if (tab.dataset.tab === 'github') {
+        loadGitSettings();
+      }
+
       const errorDiv = document.getElementById('modalError');
       if (errorDiv) errorDiv.style.display = 'none';
     });
   });
-
-  // Color picker event listeners
-
 
   // Close modal when clicking outside
   if (modal) {
@@ -506,7 +747,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Load accounts and start timer
   loadAccounts();
   updateTimer();
 });
