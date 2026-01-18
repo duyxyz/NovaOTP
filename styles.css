@@ -169,7 +169,6 @@ body {
 .close-btn:hover {
   background: var(--border-input);
   color: var(--text-primary);
-  transform: rotate(90deg);
 }
 
 .clear-search:hover {
@@ -190,13 +189,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
 }
 
 .settings-btn:hover {
   background: var(--accent-blue-hover);
-  transform: rotate(45deg);
 }
 
 #openGuideBtn:hover {
