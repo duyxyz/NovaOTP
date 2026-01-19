@@ -249,10 +249,7 @@ function renderAccounts() {
       return `
       <div class="account-item" data-index="${index}">
         <div class="drag-handle">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
-            <circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
-          </svg>
+          <span class="material-icons" style="font-size: 16px;">drag_indicator</span>
         </div>
         <div class="account-info">
           <div class="account-name">${escapeHtml(account.issuer || account.name)}</div>

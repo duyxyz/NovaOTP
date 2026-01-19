@@ -23,6 +23,28 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+/* Material Icons Class Definition */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+  user-select: none;
+  /* Prevent text selection of icon ligatures */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-body: #1c1f26;
@@ -104,12 +126,15 @@ body {
   color: var(--text-muted);
   pointer-events: none;
   z-index: 1;
+  font-size: 20px;
+  /* Adjusted size */
 }
 
 .search-container .search-input {
   width: 100%;
   height: 36px;
-  padding: 0 36px;
+  padding: 6px 40px 8px;
+  /* Increased padding */
   border: 1px solid var(--border-input);
   border-radius: 20px;
   font-size: 13px;
@@ -119,7 +144,8 @@ body {
   display: block;
   box-sizing: border-box;
   margin: 0;
-  line-height: normal;
+  line-height: 20px;
+  /* Ensure vertical centering */
 }
 
 .search-input:focus {
@@ -203,9 +229,11 @@ body {
   background: var(--bg-tab-active);
 }
 
-.settings-btn svg {
+.settings-btn svg,
+.settings-btn .material-icons {
   width: 20px;
   height: 20px;
+  font-size: 20px;
 }
 
 .content {
