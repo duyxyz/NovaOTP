@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation | NovaOTP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --bg-body: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            padding: 32px 24px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 40px;
+        }
+
+        .nav-group {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 8px 0;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 64px 80px;
+            max-width: 1000px;
+        }
+
+        section {
+            margin-bottom: 64px;
+            scroll-margin-top: 64px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 24px 0;
+        }
+
+        .info-box.warning {
+            background: #fffbeb;
+            border-left-color: var(--accent-warning);
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        code {
+            background: var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--accent-danger);
+        }
+
+        .step-img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 24px 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 900px) {
+            aside {
+                display: none;
+            }
+
+            main {
+                margin-left: 0;
+                padding: 40px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside>
+        <div class="logo">
+            <span class="material-icons">vpn_key</span>
+            NovaOTP
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-title">Getting Started</div>
+            <a href="#intro" class="nav-item">Introduction</a>
+            <a href="#manual" class="nav-item">Manual Entry</a>
+            <a href="#google" class="nav-item">Google Import</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-title">Management</div>
+            <a href="#edit" class="nav-item">Editing Accounts</a>
+            <a href="#reorder" class="nav-item">Reordering List</a>
+            <a href="#delete" class="nav-item">Deleting Data</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-title">Cloud & Security</div>
+            <a href="#github" class="nav-item">GitHub Backup</a>
+            <a href="#encryption" class="nav-item">Secure Encryption</a>
+        </div>
+    </aside>
+
+    <main>
+        <section id="intro">
+            <h1>Introduction</h1>
+            <p>Welcome to NovaOTP, a lightweight and secure two-factor authentication (2FA) manager built directly into
+                your browser. This documentation guides you through setting up and optimizing your security experience.
+            </p>
+            <div class="info-box">
+                <h4><span class="material-icons" style="font-size: 18px;">info</span> Pro Tip</h4>
+                NovaOTP works entirely offline by default. Your secrets are stored in your browser's local storage and
+                only leave your device if you explicitly use the GitHub Sync feature.
+            </div>
+        </section>
+
+        <section id="manual">
+            <h2>Manual Entry</h2>
+            <p>The most reliable way to add an account when you have the secret seed provided by the service provider.
+            </p>
+            <ul>
+                <li>Open <b>Settings</b> and find the <b>Manual Entry</b> tab.</li>
+                <li><b>Account Name:</b> Usually your email address or username.</li>
+                <li><b>Issuer:</b> The name of the service (e.g., Facebook, Discord).</li>
+                <li><b>Secret Key:</b> Paste the Base32 string. Whitespace is automatically handled.</li>
+            </ul>
+        </section>
+
+        <section id="google">
+            <h2>Google Import</h2>
+            <p>Migrate your existing codes from Google Authenticator in seconds.</p>
+            <ul>
+                <li>Open Google Authenticator on your phone.</li>
+                <li>Go to <b>Settings</b> &rarr; <b>Transfer accounts</b> &rarr; <b>Export accounts</b>.</li>
+                <li>Select your accounts and generate the QR code.</li>
+                <li>Scan the QR to get the <code>otpauth-migration://</code> URL.</li>
+                <li>Paste this URL into the <b>Google Import</b> tab in NovaOTP Settings.</li>
+            </ul>
+        </section>
+
+        <section id="edit">
+            <h2>Editing Accounts</h2>
+            <p>Need to update a label or fix a secret key? Use our dedicated editor modal for precise control.</p>
+            <ul>
+                <li>Click the <b>Pencil icon</b> at the top of the Settings panel.</li>
+                <li>Select the account you wish to modify from the list.</li>
+                <li>Update any field and click <b>Save Changes</b>.</li>
+                <li>Changes are immediately reflected in the main view and current OTP codes.</li>
+            </ul>
+        </section>
+
+        <section id="reorder">
+            <h2>Reordering List</h2>
+            <p>Organize your accounts to prioritize your most frequently used services.</p>
+            <div class="info-box">
+                <h4><span class="material-icons" style="font-size: 18px;">drag_indicator</span> Visual Handle</h4>
+                Look for the <b>⠿ (Drag Handle)</b> on the left side of each account card in the main list.
+            </div>
+            <ul>
+                <li>Click and hold the <b>⠿ handle</b> of an account.</li>
+                <li>Drag the card to your preferred position in the list.</li>
+                <li>Release to drop. NovaOTP automatically saves the new order instantly.</li>
+                <li>Reordering works in real-time even during active search filtering.</li>
+            </ul>
+        </section>
+
+        <section id="delete">
+            <h2>Deleting Data</h2>
+            <p>Cleaning up your dashboard is simple but requires confirmation to prevent accidents.</p>
+            <div class="info-box warning">
+                <h4><span class="material-icons"
+                        style="font-size: 18px; color: var(--accent-danger);">report_problem</span> Dangerous Action
+                </h4>
+                Deleting an account is permanent. Ensure you have the backup secret or the 2FA deactivated on the
+                service provider before proceed.
+            </div>
+            <ul>
+                <li>Navigate to the <b>Delete</b> tab inside the Settings modal.</li>
+                <li>Toggle the checkboxes for the accounts you wish to remove.</li>
+                <li>Use <b>Select All</b> at the bottom for quick mass-deletion.</li>
+                <li>Click <b>Delete Selected</b> and confirm via the secure popup.</li>
+            </ul>
+        </section>
+
+        <section id="github">
+            <h2>GitHub Backup</h2>
+            <p>Never lose your codes again. Sync them securely to your own GitHub account using Private Gists.</p>
+            <div class="info-box warning">
+                <h4><span class="material-icons" style="font-size: 18px; color: var(--accent-warning);">warning</span>
+                    Safety First</h4>
+                Backup data is encrypted locally with your <b>Backup Password</b> before being uploaded. NovaOTP
+                developers can never see your data.
+            </div>
+            <ul>
+                <li>Generate a <b>Personal Access Token (PAT)</b> on GitHub with the <code>gist</code> scope.</li>
+                <li>Set a strong <b>Backup Password</b>. You must remember this password to restore!</li>
+                <li>Click <b>Backup</b>. NovaOTP will create or find a Gist named "NovaOTP Secure Backup Data".</li>
+            </ul>
+        </section>
+
+        <section id="encryption">
+            <h2>Secure Encryption</h2>
+            <p>We use industry-standard <b>AES-256-GCM</b> encryption for your backups.</p>
+            <ul>
+                <li><b>PBKDF2 Derivation:</b> Your password is never stored; it is used to derive a high-entropy key
+                    with 100k iterations and a unique salt.</li>
+                <li><b>Zero Knowledge:</b> No one but you can decrypt your backup file, not even GitHub or the extension
+                    authors.</li>
+                <li><b>Multi-Password Support:</b> Each unique password generates a distinct filename (e.g.,
+                    <code>nova_otp_xxxx.txt</code>), allowing you to keep multiple independent backups in one Gist.
+                </li>
+            </ul>
+        </section>
+
+        <p style="margin-top: 100px; text-align: center; color: var(--text-muted); font-size: 12px;">
+            &copy; 2026 NovaOTP. Built for privacy.
+        </p>
+    </main>
+</body>
+
+</html>
