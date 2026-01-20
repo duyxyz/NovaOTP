@@ -187,6 +187,12 @@ export function renderDeleteList(accounts) {
             if (selectAll) selectAll.checked = allChecked;
         });
     });
+
+    if (selectAll) {
+        selectAll.onchange = () => {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        };
+    }
 }
 
 export function renderEditList(accounts, onEditSelect) {

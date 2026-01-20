@@ -13,6 +13,31 @@ body {
     overflow: hidden;
 }
 
+/* Modern Slim Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-primary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+input,
+button,
+textarea {
+    font-family: 'Lexend', sans-serif;
+    outline: none;
+}
+
 .container {
     position: relative;
     height: 100%;
