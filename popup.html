@@ -87,68 +87,80 @@
         </div>
 
         <div id="tab-manual" class="tab-content active">
-          <input type="text" id="manualName" placeholder="Account Name (Email/User)">
-          <input type="text" id="manualIssuer" placeholder="Issuer (e.g. Google, Facebook)">
-          <input type="text" id="manualSecret" placeholder="Secret Key (Base32)" style="font-family: monospace;">
-          <button class="btn" id="submitManualBtn">Add Account</button>
-
-          <div class="info">
-            <strong>Manual Entry Guide:</strong><br>
-            • <b>Account Name:</b> Your email or account label.<br>
-            • <b>Issuer:</b> Service name (e.g. Google, Discord).<br>
-            • <b>Secret Key:</b> The 2FA Base32 string provided.<br>
-            • Keep this key safe and never share it.
+          <div class="tab-main">
+            <input type="text" id="manualName" placeholder="Account Name (Email/User)">
+            <input type="text" id="manualIssuer" placeholder="Issuer (e.g. Google, Facebook)">
+            <input type="text" id="manualSecret" placeholder="Secret Key (Base32)" style="font-family: monospace;">
+          </div>
+          <div class="tab-actions">
+            <button class="btn" id="submitManualBtn">Add Account</button>
+            <div class="info">
+              <strong>Manual Entry Guide:</strong><br>
+              • <b>Account Name:</b> Your email or account label.<br>
+              • <b>Issuer:</b> Service name (e.g. Google, Discord).<br>
+              • <b>Secret Key:</b> The 2FA Base32 string provided.<br>
+              • Keep this key safe and never share it.
+            </div>
           </div>
         </div>
 
         <div id="tab-google" class="tab-content">
-          <textarea id="uriInput" placeholder="Paste otpauth-migration:// URI here..."></textarea>
-          <button class="btn" id="submitBtn">Import from Google</button>
-          <div class="info">
-            <strong>How to get the URI:</strong><br>
-            1. Open Google Authenticator → <b>Settings</b>.<br>
-            2. Choose <b>Transfer accounts</b> → <b>Export accounts</b>.<br>
-            3. Select accounts and take a photo of the <b>QR Code</b>.<br>
-            4. Scan the QR code to get the <b>otpauth-migration://</b> link.
+          <div class="tab-main">
+            <textarea id="uriInput" placeholder="Paste otpauth-migration:// URI here..."></textarea>
+          </div>
+          <div class="tab-actions">
+            <button class="btn" id="submitBtn">Import from Google</button>
+            <div class="info">
+              <strong>How to get the URI:</strong><br>
+              1. Open Google Authenticator → <b>Settings</b>.<br>
+              2. Choose <b>Transfer accounts</b> → <b>Export accounts</b>.<br>
+              3. Select accounts and take a photo of the <b>QR Code</b>.<br>
+              4. Scan the QR code to get the <b>otpauth-migration://</b> link.
+            </div>
           </div>
         </div>
 
         <div id="tab-github" class="tab-content">
-          <div class="github-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">GitHub Personal Access
-              Token</label>
-            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
-            <div style="font-size: 11px; color: var(--text-secondary);">Token needs <strong>gist</strong> scope.</div>
+          <div class="tab-main">
+            <div class="github-group">
+              <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">GitHub Personal Access
+                Token</label>
+              <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
+              <div style="font-size: 11px; color: var(--text-secondary);">Token needs <strong>gist</strong> scope.</div>
+            </div>
+
+            <div class="github-group">
+              <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Backup Password</label>
+              <input type="password" id="githubPassword" placeholder="Enter password to encrypt/decrypt">
+              <div style="font-size: 11px; color: var(--text-secondary);">Don't lose this! You need it to restore.</div>
+            </div>
+
+            <div class="github-group">
+              <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Gist ID (Optional)</label>
+              <input type="text" id="githubProjectNumber" placeholder="Leave empty for auto-detect">
+              <div style="font-size: 11px; color: var(--text-secondary);">Auto-creates or finds your NovaOTP gist.</div>
+            </div>
           </div>
 
-          <div class="github-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Backup Password</label>
-            <input type="password" id="githubPassword" placeholder="Enter password to encrypt/decrypt">
-            <div style="font-size: 11px; color: var(--text-secondary);">Don't lose this! You need it to restore.</div>
-          </div>
-
-          <div class="github-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Gist ID (Optional)</label>
-            <input type="text" id="githubProjectNumber" placeholder="Leave empty for auto-detect">
-            <div style="font-size: 11px; color: var(--text-secondary);">Auto-creates or finds your NovaOTP gist.</div>
-          </div>
-
-          <div style="display: flex; gap: 10px;">
-            <button class="btn" id="githubBackupBtn" style="flex: 1;">
-              <span class="material-icons" style="font-size: 18px;">cloud_upload</span>
-              <span>Backup</span>
-            </button>
-            <button class="btn btn-icon" id="githubRestoreBtn" style="flex: 1; background: var(--text-secondary);">
-              <span class="material-icons" style="font-size: 18px;">cloud_download</span>
-              <span>Restore</span>
-            </button>
+          <div class="tab-actions">
+            <div style="display: flex; gap: 10px;">
+              <button class="btn" id="githubBackupBtn" style="flex: 1;">
+                <span class="material-icons" style="font-size: 18px;">cloud_upload</span>
+                <span>Backup</span>
+              </button>
+              <button class="btn btn-icon" id="githubRestoreBtn" style="flex: 1; background: var(--text-secondary);">
+                <span class="material-icons" style="font-size: 18px;">cloud_download</span>
+                <span>Restore</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div id="tab-delete" class="tab-content" style="gap: 0;">
-          <div id="deleteList" class="delete-list" style="flex: 1; overflow-y: auto; border: none; padding: 0;"></div>
-          <div
-            style="display: flex; justify-content: space-between; align-items: center; height: 65px; border-top: 1px solid var(--border-primary); padding: 0 24px; margin: 0 -24px -24px -24px; flex-shrink: 0; background: var(--bg-modal);">
+        <div id="tab-delete" class="tab-content">
+          <div class="tab-main">
+            <div id="deleteList" class="delete-list" style="padding-top: 0;"></div>
+          </div>
+          <div class="delete-footer">
             <label
               style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer;">
               <input type="checkbox" id="selectAllCheckbox"> Select All
@@ -161,55 +173,49 @@
     </div>
   </div>
 
-  <!-- Edit Modal (Full screen, limited scroll list) -->
-  <div class="modal" id="editModal" style="z-index: 1500; background: var(--bg-modal);">
-    <div class="modal-content"
-      style="width: 100%; height: 100%; top: 0; left: 0; transform: none; border-radius: 0; padding: 24px; display: flex; flex-direction: column; bottom: 0;">
+  <div class="modal" id="editModal">
+    <div class="modal-content">
 
       <!-- Synchronized Header -->
-      <div
-        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; min-height: 40px;">
-        <h3 style="font-size: 18px; font-weight: 600; flex: none;">Select Account</h3>
-        <div
-          style="flex: 1; display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; min-width: 0; overflow: hidden;">
-          <div id="editMsg"
-            style="font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: none;">
-          </div>
+      <div class="modal-header">
+        <div class="modal-title-wrapper">
+          <h2 id="editModalTitle">Select Account</h2>
         </div>
-        <button class="close-btn" id="closeEditModalBtn" style="position: static; padding: 8px; flex: none;"><span
-            class="material-icons">close</span></button>
+        <div id="editMsg" style="font-size: 11px; font-weight: 600; color: var(--accent-blue); display: none;"></div>
+        <button class="close-btn" id="closeEditModalBtn"><span class="material-icons">close</span></button>
       </div>
 
-      <div id="editListContainer" style="display: flex; flex-direction: column; flex: 1;">
-        <div id="editList" class="delete-list"
-          style="height: 400px; overflow-y: auto; border: 1px solid var(--border-primary); border-radius: 12px; margin-bottom: 0;">
-        </div>
+      <div id="editListContainer" class="settings-section">
+        <div id="editList" class="edit-list"></div>
       </div>
 
-      <div id="editFormContainer" style="display: none; flex-direction: column; height: 100%;">
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; flex-shrink: 0;">
+      <div id="editFormContainer" class="settings-section" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
           <button id="backToEditListBtn" class="clear-search"
-            style="position: static; transform: none; background: var(--border-primary); padding: 8px; border-radius: 50%;"><span
-              class="material-icons">arrow_back</span></button>
-          <h3 style="font-size: 18px; font-weight: 600;">Edit details</h3>
+            style="position: static; transform: none; background: var(--bg-tab-hover); padding: 6px; border-radius: 50%;"><span
+              class="material-icons" style="font-size: 20px;">arrow_back</span></button>
+          <span style="font-size: 15px; font-weight: 600;">Edit details</span>
         </div>
-        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+
+        <div class="tab-main" style="padding-top: 8px;">
           <input type="hidden" id="editAccountIndex">
           <div class="input-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Account Name</label>
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Account Name</label>
             <input type="text" id="editName" placeholder="Account Name">
           </div>
           <div class="input-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Issuer</label>
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Issuer</label>
             <input type="text" id="editIssuer" placeholder="Issuer">
           </div>
           <div class="input-group">
-            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Secret Key</label>
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Secret Key</label>
             <input type="text" id="editSecret" placeholder="Secret Key" style="font-family: monospace;">
           </div>
         </div>
-        <button class="btn" id="saveEditBtn"
-          style="margin-top: auto; height: 48px; font-weight: 600; flex-shrink: 0;">Save Changes</button>
+
+        <div class="tab-actions">
+          <button class="btn" id="saveEditBtn">Save Changes</button>
+        </div>
       </div>
     </div>
   </div>

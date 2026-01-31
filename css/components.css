@@ -149,7 +149,7 @@
 .tabs {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
     border-bottom: 1px solid var(--border-primary);
     padding-bottom: 16px;
 }
@@ -193,8 +193,8 @@ input[type="number"] {
 }
 
 textarea {
-    height: 100px;
     flex: 1;
+    min-height: 100px;
     resize: none;
     font-family: monospace;
 }
@@ -264,6 +264,7 @@ input[type="checkbox"]:checked {
 }
 
 .info {
+    margin-top: auto;
     padding: 12px;
     background: var(--bg-input);
     border-radius: 8px;

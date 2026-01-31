@@ -20,7 +20,7 @@
     background: var(--bg-modal);
     width: 100%;
     height: 100%;
-    padding: 24px;
+    padding: 16px;
     position: absolute;
     bottom: -100%;
     left: 0;
@@ -36,11 +36,11 @@
 .modal-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px;
-    background: var(--bg-header);
+    gap: 12px;
+    padding-bottom: 16px;
+    background: transparent;
     border-bottom: 1px solid var(--border-primary);
-    margin: -24px -24px 16px -24px;
+    margin-bottom: 16px;
 }
 
 .modal-title-wrapper {
@@ -62,7 +62,9 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    gap: 16px;
 }
+
 
 .tab-content {
     display: none;
@@ -71,7 +73,32 @@
     min-height: 0;
     gap: 16px;
     padding: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
+
+.tab-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.tab-main::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.tab-content::-webkit-scrollbar {
+    display: none;
+}
+
 
 .tab-content.active {
     display: flex;

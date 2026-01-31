@@ -75,40 +75,177 @@
     cursor: grabbing;
 }
 
-/* Delete List */
+/* Delete Grid */
 .delete-list {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+    flex: 1;
+    overflow-y: visible;
     scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
 }
 
 .delete-list::-webkit-scrollbar {
     display: none;
+    /* Chrome, Safari, Opera */
 }
 
-.delete-list-item {
+.delete-card {
+    background: var(--bg-input);
+    border: 2px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 16px 12px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    height: 40px;
-    border-bottom: 1px solid var(--border-primary);
+    text-align: center;
     cursor: pointer;
     position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-    flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* .delete-list-item:last-child {
-    border-bottom: none;
-} */
+.delete-card:hover {
+    background: var(--bg-tab-hover);
+    border-color: var(--border-input);
+}
 
-.delete-list-item span {
+.delete-card.selected {
+    background: var(--bg-tab-active);
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.selection-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: var(--accent-blue);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s ease;
+}
+
+.delete-card.selected .selection-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.card-avatar {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-body);
+    color: var(--accent-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-primary);
+}
+
+.delete-card.selected .card-avatar {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+}
+
+.delete-card .card-info {
+    width: 100%;
+    min-width: 0;
+}
+
+.delete-card .card-name {
     font-size: 13px;
+    font-weight: 600;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.delete-card .card-issuer {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delete-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-primary);
+    padding-top: 16px;
+    background: var(--bg-modal);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* Edit List Style */
+.edit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: none;
+}
+
+.edit-list::-webkit-scrollbar {
+    display: none;
+}
+
+.edit-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-list-item:hover {
+    background: var(--bg-tab-hover);
+    border-color: var(--border-input);
+    transform: translateX(4px);
+}
+
+.edit-list-item .item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.edit-list-item .item-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.edit-list-item .item-issuer {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.edit-list-item .edit-icon {
+    font-size: 18px;
+    color: var(--accent-blue);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.edit-list-item:hover .edit-icon {
+    opacity: 1;
 }

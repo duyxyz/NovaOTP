@@ -167,12 +167,31 @@ export function renderDeleteList(accounts) {
 
     if (selectAll) selectAll.disabled = false;
 
-    container.innerHTML = accounts.map((acc, idx) => `
-    <label class="delete-list-item" data-idx="${idx}">
-      <input type="checkbox" class="delete-checkbox" value="${idx}">
-      <span>${escapeHtml(acc.issuer ? acc.issuer + ' (' + acc.name + ')' : acc.name)}</span>
-    </label>
-  `).join('');
+    container.innerHTML = accounts.map((acc, idx) => {
+        const initial = (acc.issuer || acc.name || '?').charAt(0).toUpperCase();
+        return `
+      <label class="delete-card" data-idx="${idx}">
+        <input type="checkbox" class="delete-checkbox" value="${idx}" style="display: none;">
+        <div class="selection-indicator">
+          <span class="material-icons">check_circle</span>
+        </div>
+        <div class="card-avatar">${initial}</div>
+        <div class="card-info">
+          <div class="card-name">${escapeHtml(acc.issuer || acc.name)}</div>
+          <div class="card-issuer">${escapeHtml(acc.name)}</div>
+        </div>
+      </label>
+    `;
+    }).join('');
+
+    const checkboxes = document.querySelectorAll('.delete-checkbox');
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+            cb.closest('.delete-card').classList.toggle('selected', cb.checked);
+            const allChecked = Array.from(checkboxes).every(c => c.checked);
+            if (selectAll) selectAll.checked = allChecked;
+        });
+    });
 
     document.querySelectorAll('.delete-list-item').forEach(item => {
         item.addEventListener('click', createRipple);
@@ -180,17 +199,12 @@ export function renderDeleteList(accounts) {
 
     deleteBtn.style.display = 'block';
 
-    const checkboxes = document.querySelectorAll('.delete-checkbox');
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-            const allChecked = Array.from(checkboxes).every(c => c.checked);
-            if (selectAll) selectAll.checked = allChecked;
-        });
-    });
-
     if (selectAll) {
         selectAll.onchange = () => {
-            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll.checked;
+                cb.closest('.delete-card').classList.toggle('selected', cb.checked);
+            });
         };
     }
 }
@@ -205,16 +219,16 @@ export function renderEditList(accounts, onEditSelect) {
     }
 
     container.innerHTML = accounts.map((acc, idx) => `
-    <div class="delete-list-item" data-idx="${idx}" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 12px 25px;">
-      <div style="display: flex; flex-direction: column;">
-        <span style="font-size: 14px; font-weight: 500; color: var(--text-primary);">${escapeHtml(acc.issuer || acc.name)}</span>
-        <span style="font-size: 11px; color: var(--text-secondary);">${escapeHtml(acc.name)}</span>
+    <div class="edit-list-item" data-idx="${idx}">
+      <div class="item-info">
+        <div class="item-name">${escapeHtml(acc.issuer || acc.name)}</div>
+        <div class="item-issuer">${escapeHtml(acc.name)}</div>
       </div>
-      <span class="material-icons" style="font-size: 18px; color: var(--text-secondary);">edit</span>
+      <span class="material-icons edit-icon">edit</span>
     </div>
   `).join('');
 
-    container.querySelectorAll('.delete-list-item').forEach(item => {
+    container.querySelectorAll('.edit-list-item').forEach(item => {
         item.addEventListener('click', (e) => {
             createRipple(e);
             onEditSelect(parseInt(item.dataset.idx));
