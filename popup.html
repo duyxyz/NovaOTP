@@ -92,7 +92,7 @@
           <input type="text" id="manualSecret" placeholder="Secret Key (Base32)" style="font-family: monospace;">
           <button class="btn" id="submitManualBtn">Add Account</button>
 
-          <div class="info" style="margin-top: 16px; font-size: 12px; line-height: 1.5; padding: 12px;">
+          <div class="info">
             <strong>Manual Entry Guide:</strong><br>
             • <b>Account Name:</b> Your email or account label.<br>
             • <b>Issuer:</b> Service name (e.g. Google, Discord).<br>
@@ -102,10 +102,9 @@
         </div>
 
         <div id="tab-google" class="tab-content">
-          <textarea id="uriInput" placeholder="Paste otpauth-migration:// URI here..."
-            style="font-size: 12px;"></textarea>
+          <textarea id="uriInput" placeholder="Paste otpauth-migration:// URI here..."></textarea>
           <button class="btn" id="submitBtn">Import from Google</button>
-          <div class="info" style="margin-top: 16px; font-size: 12px; line-height: 1.5; padding: 12px;">
+          <div class="info">
             <strong>How to get the URI:</strong><br>
             1. Open Google Authenticator → <b>Settings</b>.<br>
             2. Choose <b>Transfer accounts</b> → <b>Export accounts</b>.<br>
@@ -115,35 +114,27 @@
         </div>
 
         <div id="tab-github" class="tab-content">
-          <div style="margin-bottom: 12px;">
-            <label
-              style="font-size: 12px; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 5px;">GitHub
-              Personal Access Token</label>
-            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" style="margin-bottom: 5px;">
+          <div class="github-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">GitHub Personal Access
+              Token</label>
+            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
             <div style="font-size: 11px; color: var(--text-secondary);">Token needs <strong>gist</strong> scope.</div>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <label
-              style="font-size: 12px; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 5px;">Backup
-              Password</label>
-            <input type="password" id="githubPassword" placeholder="Enter password to encrypt/decrypt"
-              style="margin-bottom: 5px;">
+          <div class="github-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Backup Password</label>
+            <input type="password" id="githubPassword" placeholder="Enter password to encrypt/decrypt">
             <div style="font-size: 11px; color: var(--text-secondary);">Don't lose this! You need it to restore.</div>
           </div>
 
-          <div style="margin-bottom: 15px;">
-            <label
-              style="font-size: 12px; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 5px;">Gist
-              ID (Optional)</label>
-            <input type="text" id="githubProjectNumber" placeholder="Leave empty for auto-detect"
-              style="margin-bottom: 5px;">
+          <div class="github-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-primary);">Gist ID (Optional)</label>
+            <input type="text" id="githubProjectNumber" placeholder="Leave empty for auto-detect">
             <div style="font-size: 11px; color: var(--text-secondary);">Auto-creates or finds your NovaOTP gist.</div>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 5px;">
-            <button class="btn" id="githubBackupBtn"
-              style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <div style="display: flex; gap: 10px;">
+            <button class="btn" id="githubBackupBtn" style="flex: 1;">
               <span class="material-icons" style="font-size: 18px;">cloud_upload</span>
               <span>Backup</span>
             </button>
@@ -154,11 +145,10 @@
           </div>
         </div>
 
-        <div id="tab-delete" class="tab-content" style="flex-direction: column; padding: 0; gap: 0;">
-          <div id="deleteList" class="delete-list"
-            style="height: 320px; overflow-y: auto; border: none; padding: 0; margin-top: -12px;"></div>
+        <div id="tab-delete" class="tab-content" style="gap: 0;">
+          <div id="deleteList" class="delete-list" style="flex: 1; overflow-y: auto; border: none; padding: 0;"></div>
           <div
-            style="display: flex; justify-content: space-between; align-items: center; height: 65px; border-top: 1px solid var(--border-primary); padding: 0 25px; margin: auto -24px -24px -24px; flex-shrink: 0; background: var(--bg-modal);">
+            style="display: flex; justify-content: space-between; align-items: center; height: 65px; border-top: 1px solid var(--border-primary); padding: 0 24px; margin: 0 -24px -24px -24px; flex-shrink: 0; background: var(--bg-modal);">
             <label
               style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer;">
               <input type="checkbox" id="selectAllCheckbox"> Select All
@@ -203,14 +193,20 @@
               class="material-icons">arrow_back</span></button>
           <h3 style="font-size: 18px; font-weight: 600;">Edit details</h3>
         </div>
-        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;">
+        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
           <input type="hidden" id="editAccountIndex">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Account Name</label>
-          <input type="text" id="editName" placeholder="Account Name">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Issuer</label>
-          <input type="text" id="editIssuer" placeholder="Issuer">
-          <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Secret Key</label>
-          <input type="text" id="editSecret" placeholder="Secret Key" style="font-family: monospace;">
+          <div class="input-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Account Name</label>
+            <input type="text" id="editName" placeholder="Account Name">
+          </div>
+          <div class="input-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Issuer</label>
+            <input type="text" id="editIssuer" placeholder="Issuer">
+          </div>
+          <div class="input-group">
+            <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Secret Key</label>
+            <input type="text" id="editSecret" placeholder="Secret Key" style="font-family: monospace;">
+          </div>
         </div>
         <button class="btn" id="saveEditBtn"
           style="margin-top: auto; height: 48px; font-weight: 600; flex-shrink: 0;">Save Changes</button>
